@@ -1,59 +1,74 @@
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    const button = form.querySelector('button');
+
+    const descriptionInput = document.createElement('input');
+    descriptionInput.className = "des-input";
+    descriptionInput.id = 'description';
+    descriptionInput.type = 'text';
+    descriptionInput.placeholder = 'Enter fruit description';
+
+    form.insertBefore(descriptionInput, button);
+});
+
 const form = document.querySelector("form");
 const fruits = document.querySelector(".fruits");
 
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
+form.addEventListener('submit', function(event) {
+    event.preventDefault();
+    const fruitToAdd = document.getElementById('fruit-to-add');
+    const newLi = document.createElement('li');
+    const newLiText = document.createTextNode(fruitToAdd.value);
 
+    newLi.appendChild(newLiText);
+    newLi.className = 'fruit';
 
-  const fruitToAdd = document.getElementById("fruit-to-add");
+    const deletebtn = document.createElement('button');
+    const deletebtnText = document.createTextNode('x');
+    deletebtn.appendChild(deletebtnText);
+    deletebtn.className = 'delete-btn';
 
-  var listItems = document.querySelectorAll('.fruit');
+    const editbtn = document.createElement('button');
+    const editbtnText = document.createTextNode('Edit');
+    editbtn.appendChild(editbtnText);
+    editbtn.className = 'edit-btn';
 
-  listItems.forEach(function(item) {
-    var editButton = document.createElement('button');
-    editButton.textContent = 'Edit';
-    editButton.className = 'edit-btn';
-    
-    // Adding click event listener to edit button
-    editButton.addEventListener('click', function() {
-      // Add your edit functionality here
-      console.log('Edit button clicked for: ' + item.textContent);
-    });
+    // Loop through description inputs to get their values
+    const descriptionInputs = document.getElementsByClassName('des-input');
+    for (let i = 0; i < descriptionInputs.length; i++) {
+        const description = descriptionInputs[i].value;
+        const descriptionPara = document.createElement('p');
+        descriptionPara.style.fontStyle = 'italic';
+        const descriptionEm = document.createElement('em');
+        const descriptionText = document.createTextNode(description);
+        descriptionEm.appendChild(descriptionText);
+        descriptionPara.appendChild(descriptionEm);
+        newLi.appendChild(descriptionPara);
+    }
 
-    // Appending edit button to list item
-    item.appendChild(editButton);
-  });
-
-
-  const newLi = document.createElement("li");
-  // newLi.innerHTML = fruitToAdd.value + '<button class="delete-btn">x</button>' + '<button class="edit-btn">edit</button>';
-
-  const newLiText = document.createTextNode(fruitToAdd.value);
-
-  newLi.appendChild(newLiText);
-  newLi.className = "fruit";
-
-  const dltbtn = document.createElement("button");
-  const dltbtnText = document.createTextNode("X");
-
-  const editbtn = document.createElement("button");
-  editbtn.classList= 'edit-btn'
-  const editText = document.createTextNode("edit");
- 
-  editbtn.appendChild(editText);
-  dltbtn.appendChild(dltbtnText);
-  dltbtn.className = 'delete-btn';
-  newLi.appendChild(dltbtn);
-  newLi.appendChild(editbtn);
-
-  fruits.appendChild(newLi);
+    newLi.appendChild(deletebtn);
+    newLi.appendChild(editbtn);
+    fruits.appendChild(newLi);
 });
-fruits.addEventListener("click", function (event) {
-  event.preventDefault();
-  if (event.target.classList.contains("delete-btn")) {
-    const fruitTodlt = event.target.parentElement;
-    fruits.removeChild(fruitTodlt);
-  }
 
+fruits.addEventListener("click", function(event) {
+    event.preventDefault();
+    if (event.target.classList.contains("delete-btn")) {
+        const fruitToDelete = event.target.parentElement;
+        fruitToDelete.parentElement.removeChild(fruitToDelete);
+    }
+});
 
+const filter = document.getElementById('filter');
+filter.addEventListener('keyup', function(event) {
+    const textEnteredByUser = event.target.value.toLowerCase();
+    const fruitItems = document.getElementsByClassName('fruit');
+    for (let i = 0; i < fruitItems.length; i++) {
+        const currentFruitText = fruitItems[i].textContent.toLowerCase();
+        if (currentFruitText.includes(textEnteredByUser)) {
+            fruitItems[i].style.display = 'block';
+        } else {
+            fruitItems[i].style.display = 'none';
+        }
+    }
 });
